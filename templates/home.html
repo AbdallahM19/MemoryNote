@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="../static/home.css">
+    <link rel="stylesheet" href="../static/home_header.css">
+    <link rel="stylesheet" href="../static/home_divide.css">
+    <link rel="stylesheet" href="../static/home_search.css">
+    <link rel="stylesheet" href="../static/profile.css">
+    <link rel="stylesheet" href="../static/memories_poster.css">
+    <link rel="stylesheet" href="../static/web_and_share_css/button.css">
+    <!-- <link rel="stylesheet" href="../static/web_and_share_css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="profile">
+            <a href="/profile" class="profile-button">
+                <img src="{{ image }}" alt="Profile Image">
+                <!-- <i class="fas fa-user-circle"></i> -->
+            </a>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profileModal" class="modal_profile">
+            <div class="profile-modal-content">
+                <span class="close-button">&times;</span>
+                <div class="profile-view">
+                    <div class="profile_div">
+                        <img src="" alt="Profile Image" class="profile-image">
+                    </div>
+                    <h2 class="full-name"></h2>
+                    <p class="username"></p>
+                    <p class="email"></p>
+                    <button class="edit-button">Edit</button>
+                    <a href="/logout" class="logout-button">Logout</a>
+                </div>
+                <div class="profile-edit" style="display: none;">
+                    <div class="image-container">
+                        <label for="profileImageInput">
+                            <div class="profile_edit_div">
+                                <img src="" alt="Edit Profile Image" class="edit-profile-image">
+                            </div>
+                        </label>
+                        <input type="file" id="profileImageInput" style="display: none;">
+                    </div>
+                    <input type="text" id="editFullName" placeholder="Full Name">
+                    <input type="text" id="editUsername" placeholder="Username">
+                    <input type="email" id="editEmail" placeholder="Email">
+                    <input type="password" id="editPassword" placeholder="Password">
+                    <button class="save-button">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar Section -->
+        <div class="search-container">
+            <input type="text" class="searchInput" id="searchInput" placeholder="Search memories, users, etc.">
+            <button id="searchButton" class="searchButton">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="logo">
+            <a href="/"><img src="logo.png" alt="Site Logo"></a>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <section class="home-container">
+        <!-- Trigger Button -->
+        <button id="openModal" class="open-modal-button">
+            <i class="fas fa-plus-circle"></i> Add Memory
+        </button>
+
+        <!-- Add Memory Modal -->
+        <div id="addMemoryModal" class="modal">
+            <div class="modal-content">
+                <form id="addMemoryForm" action="/add_memory" method="POST">
+                    <!-- Title Input -->
+                    <div class="input-group-input">
+                        <input id="memoryTitle" name="memoryTitle" placeholder="What's your Title?">
+                    </div>
+
+                    <!-- Content Input -->
+                    <div class="input-group-text">
+                        <textarea id="memoryContent" name="memoryContent" rows="4" placeholder="What's on your mind?"></textarea>
+                        <div id="charCount">0/500</div>
+                    </div>
+
+                    <div class="buttons-and-result">
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <!-- File Upload -->
+                            <div class="input-group-input-image">
+                                <input type="file" id="imageUpload" name="imageUpload" multiple accept="image/*">
+                            </div>
+
+                            <!-- Share Dropdown -->
+                            <div id="shareButtonResult">
+                                <button type="button" class="dropdown-button" id="shareButton">
+                                    <i class="fas fa-share-alt"></i> <span>Just Me</span>
+                                    <i class="fas fa-chevron-right dropdown-arrow"></i>
+                                </button>
+                                <ul class="dropdown-menu" id="shareDropdown">
+                                    <li data-value="self"><i class="fas fa-lock"></i>Just Me</li>
+                                    <li data-value="friends"><i class="fas fa-user-friends"></i>Friends</li>
+                                    <li data-value="everyone"><i class="fas fa-globe"></i>Everyone</li>
+                                </ul>
+                            </div>
+
+                            <!-- Status Dropdown -->
+                            <div id="statusButtonResult">
+                                <button type="button" class="dropdown-button" id="statusButton">
+                                    <i class="fas fa-globe"></i> <span>Draft</span>
+                                    <i class="fas fa-chevron-right dropdown-arrow"></i>
+                                </button>
+                                <ul class="dropdown-menu" id="statusDropdown">
+                                    <li data-value="draft">Draft</li>
+                                    <li data-value="public">Public</li>
+                                    <li data-value="private">Private</li>
+                                    <li data-value="schedule">Schedule</li>
+                                </ul>
+                            </div>
+
+                            <!-- Calendar Buttons -->
+                            <button type="button" class="calendar-button" id="calendarButton">
+                                <i class="fas fa-calendar-alt"></i> Calendar
+                            </button>
+                        </div>
+                        <div class="results">
+                            <div id="schedule-container" class="scheduler">
+                                <h5>Schedule as public</h5>
+                                <div id="schedule-options">
+                                    <input type="date" id="date" name="date">
+                                    <input type="time" id="time" name="time">
+                                </div>
+
+                                <!-- Confirm Button -->
+                                <div class="schedule-confirm">
+                                    <button id="schedule-button" type="button">Schedule</button>
+                                </div>
+                            </div>
+                            <div id="calendar-container" class="calendar">
+                                <h5>Calender as public</h5>
+                                <div id="calendar-options">
+                                    <input type="date" id="calendardate" name="date">
+                                    <input type="time" id="calendartime" name="time">
+                                </div>
+                            </div>
+                            <div class="imgUploaded">
+                            </div>
+                            <div id="class_public" class="class_public">
+                                <h4>Everyone can see it.</h4>
+                            </div>
+                            <div id="class_private" class="class_private">
+                                <h4>Will not post, just you can see it.</h4>
+                            </div>
+                            <div id="class_draft" class="class_draft">
+                                <h4>Under Review from you</h4>
+                            </div>
+                            <div id="class_just" class="class_just">
+                                <h4>just if will public, just you see it</h4>
+                            </div>
+                            <div id="class_friends" class="class_friends">
+                                <h4>just if will public, just my Friends</h4>
+                            </div>
+                            <div id="class_everyone" class="class_everyone">
+                                <h4>Everyone can see it.</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="input-group-button">
+                        <button type="submit" class="post-button">
+                            <i class="fas fa-paper-plane"></i> Post
+                        </button>
+                        <button type="button" class="preview-button">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="../static/home.js"></script>
+    <script src="../static/search.js"></script>
+    <script src="../static/profile.js"></script>
+    <script src="../static/memories_poster.js"></script>
+</body>
+</html>
