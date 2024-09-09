@@ -1,0 +1,335 @@
+/* Main CSS */
+body {
+    margin: auto;
+    padding: auto;
+    font-family: 'Roboto', sans-serif;
+    background: #1a1a1a;
+    color: #E4E6EB;
+}
+
+.home-container {
+    width: 70%;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #242526;
+    border: 1px solid #1877F2;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.open-modal-button {
+    padding: 0.7rem 1.5rem;
+    border: 3px solid #1877F2;
+    border-radius: 50px;
+    background-color: #2D88FF;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.open-modal-button i {
+    margin-right: 0.5rem;
+}
+
+.open-modal-button:hover {
+    background-color: #1877F2;
+    transform: scale(1.05);
+}
+
+.open-modal-button:active {
+    background-color: rgb(0, 90, 217);
+    transform: scale(1.05);
+}
+
+.modal {
+    /* display: block; */
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.5s;
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #3A3B3C;
+    margin: 5% auto;
+    padding: 33px;
+    border-radius: 12px;
+    width: 80%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.5s;
+}
+
+#addMemoryForm {
+    width: 96%;
+}
+
+.input-group-input,
+.input-group-text {
+    margin-bottom: 7px;
+    text-align: left;
+}
+
+.input-group-text {
+    width: 100%;
+    padding: 0rem 1.6rem 0.8rem 0rem;
+    border-radius: 8px;
+    background-color: #4E4F50;
+}
+
+.input-group-text textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 8px;
+    background-color: #4E4F50;
+    color: #E4E6EB;
+    font-size: 1rem;
+    resize: none;
+    height: 222px;
+    border: none;
+}
+
+#charCount {
+    width: 100%;
+    text-align: right;
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.input-group-input input {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #4E4F50;
+    color: #E4E6EB;
+    font-size: 1rem;
+}
+
+.input-group-input-image {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    background-color: #3A3B3C;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.input-group-input-image input {
+    width: 100%;
+}
+
+.input-group-input-image:hover {
+    background-color: #4E4F50;
+    transform: scale(1.05);
+}
+
+.input-group-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.post-button, .preview-button {
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 50px;
+    background-color: #2D88FF;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-button {
+    background-color: #3A3B3C;
+    color: #E4E6EB;
+}
+
+.post-button:hover {
+    background-color: #1877F2;
+    transform: scale(1.05);
+}
+
+.preview-button:hover {
+    background-color: #4E4F50;
+    transform: scale(1.05);
+}
+
+.post-button i, .preview-button i,
+.action-buttons i {
+    margin-right: 0.5rem;
+}
+
+.buttons-and-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: auto;
+    padding: 0.8rem;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #4E4F50;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: auto;
+    margin-right: 25px;
+    width: 30%;
+}
+
+.action-buttons button {
+    margin-bottom: 10px;
+    background-color: #3A3B3C;
+    color: #E4E6EB;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.action-buttons div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-button:hover,
+.schedule-button:hover,
+.calendar-button:hover {
+    background-color: #4E4F50;
+    transform: scale(1.05);
+}
+
+.dropdown-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-button.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-button i {
+    margin-right: 0.5rem;
+}
+
+#shareButtonResult,
+#statusButtonResult {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #3A3B3C;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    list-style: none;
+    padding: 0.5rem 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    width: 100%;
+    top: 100%;
+}
+
+.dropdown-menu li {
+    padding: 0.5rem;
+    color: #E4E6EB;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu li:hover {
+    background-color: #4E4F50;
+}
+
+#imageUpload {
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.imgUploaded {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+    gap: 10px;
+}
+
+.imgUploaded .image-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 66px; /* Set a fixed width for each image container */
+    height: 66px; /* Set a fixed height for each image container */
+    padding: 5px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+}
+
+.imgUploaded .image-div img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+.schedule-input {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #1877F2;
+    background-color: #3A3B3C;
+    color: #E4E6EB;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50%); }
+    to { transform: translateY(0); }
+}

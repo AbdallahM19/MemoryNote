@@ -1,0 +1,158 @@
+/* Modal styles */
+.modal_profile {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.profile-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Centering profile_div */
+.profile_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    height: 300px; /* Ensure it's large enough to accommodate the image */
+    margin: 0 auto; /* Center the div horizontally */
+    padding: 10px 15px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f9f9f9;
+}
+
+/* Ensure image fits within profile_div without cropping */
+.profile_div img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure the entire image is visible */
+    border-radius: 20px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.profile-view .profile_div:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Image container for edit profile */
+.image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 45px auto;
+    width: 100%;
+    max-width: 300px;
+}
+
+.profile_edit_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 300px; /* Consistent height with profile_div */
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.profile_edit_div:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.edit-profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure the entire image is visible */
+    border-radius: 20px;
+    transition: opacity 0.3s ease;
+}
+
+#profileImageInput {
+    display: none;
+}
+
+.profile-edit input[type="text"],
+.profile-edit input[type="email"],
+.profile-edit input[type="password"] {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #323232;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.save-button, .edit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 85%;
+    margin-top: 20px;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+/* Logout Button Style */
+.logout-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #ff4b4b; /* Red color for emphasis */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #e03e3e; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.logout-button:active {
+    background-color: #c02a2a; /* Even darker red when clicked */
+    transform: scale(0.95); /* Slightly shrink on click */
+}

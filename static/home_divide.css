@@ -1,0 +1,76 @@
+.buttons-and-result .results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 62%;
+    height: 175px;
+    border: 1px solid #1877F2;
+    border-radius: 9px;
+    box-shadow: 0px 0px 10px rgb(0, 0, 0);
+    margin-bottom: 10px;
+    padding: 5px 15px 0px 15px;
+}
+
+/* Container */
+.scheduler, .class_public,
+.class_private, .class_draft,
+.class_just, .class_friends,
+.class_everyone, .calendar {
+    /* display: block; */
+    display: none;
+    border-radius: 10px;
+    width: 100%;
+    margin: auto;
+    padding: 5px 15px 0px 15px;
+}
+
+.class_public h4, .class_private h4, .class_draft h4,
+.class_just h4, .class_friends h4, .class_everyone h4,
+.calendar h4 {
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+}
+
+/* Input Fields */
+#schedule-options, #calendar-options {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    margin-bottom: 10px;
+}
+
+#schedule-options input, #calendar-options input,
+#schedule-options select, #calendar-options select {
+    /* width: 150px; */
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    font-size: 14px;
+    color: rgb(33, 33, 33);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid #1877F2;
+}
+
+/* Confirm Button */
+.schedule-confirm {
+    text-align: center;
+}
+
+#schedule-button {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#schedule-button:hover {
+    background-color: #0056b3;
+}
+
