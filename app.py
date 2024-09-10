@@ -191,22 +191,56 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
-@app.route('/upload-images', methods=['POST'])
+@app.route('/upload-images', methods=['POST', 'PUT'])
 def upload_images():
-    if 'images' not in request.files:
-        return jsonify({'error': 'No files uploaded'}), 400
+    """Upload images"""
+    if request.method == 'POST':
+        if 'images' not in request.files:
+            return jsonify({'error': 'No files uploaded'}), 400
 
-    files = request.files.getlist('images')
-    image_paths = []
+        files = request.files.getlist('images')
+        image_paths = []
 
-    for file in files:
+        for file in files:
+            filename = secure_filename(file.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(path)
+            image_url = os.path.join('/static/uploads/', filename)
+            image_paths.append(image_url)
+
+        return jsonify({'imagePaths': image_paths})
+    elif request.method == 'PUT':
+        user_id = int(request.form.get('id'))
+
+        if 'image' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
+
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
         filename = secure_filename(file.filename)
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
         image_url = os.path.join('/static/uploads/', filename)
-        image_paths.append(image_url)
 
-    return jsonify({'imagePaths': image_paths})
+        # update image user in session
+        session['user']['image'] = image_url
+
+        # update current user image profile
+        user_session = get_session()
+        user_session.query(User).filter(
+            User.id == user_id
+        ).first().image = image_url
+        user_session.commit()
+        user_session.close()
+
+        return jsonify({'imageUrl': image_url})
+    else:
+        return jsonify({'error': 'Invalid request method'}), 400
 
 
 # ----------------------------------------------------------------
