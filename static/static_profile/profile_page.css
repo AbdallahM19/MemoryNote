@@ -18,7 +18,7 @@ body {
     align-items: center;
     padding: 20px;
     gap: 20px;
-    background-color: #1f1f1f;
+    background-color: rgb(31, 31, 31);
     border-radius: 10px;
 }
 
@@ -29,20 +29,29 @@ body {
     align-items: center;
 }
 
-.change-image-btn {
+.image-uploader {
     position: relative;
     width: 160px;
     height: 160px;
-    cursor: pointer;
     border-radius: 50%;
     overflow: hidden;
-    padding: 0;
-    border: 0;
-    background-color: rgb(59, 59, 59);
-    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.change-image-btn img {
+.image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.profile-pic {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -50,23 +59,62 @@ body {
     transition: all 0.3s ease;
 }
 
-.change-image-btn .edit-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50px;
-    height: auto;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 10px;
-}
-
-.change-image-btn:hover .profile-pic {
+.image-uploader:hover .profile-pic {
     filter: brightness(55%);
 }
 
-.change-image-btn:hover .edit-icon {
+.edit-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.image-uploader:hover .edit-icon {
+    opacity: 1;
+}
+
+.input-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+}
+
+.input-overlay input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+    border-radius: 50%;
+}
+
+.input-overlay input[type="file"]:hover {
+    opacity: 1;
+}
+
+.input-overlay:hover {
     opacity: 1;
 }
 
