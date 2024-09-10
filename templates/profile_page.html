@@ -38,10 +38,15 @@
     <section id="userProfile">
         <div class="profile-container">
             <div class="profile-left">
-                <button class="change-image-btn">
-                    <img src="../static/uploads/wallpaperflare.com_wallpaper.jpg" alt="User Image" class="profile-pic">
-                    <img src="../static/uploads/edit.png" alt="Edit Icon" class="edit-icon">
-                </button>
+                <div class="image-uploader">
+                    <div class="image-container">
+                        <img src="../static/uploads/wallpaperflare.com_wallpaper.jpg" alt="User Image" class="profile-pic">
+                        <img src="../static/uploads/edit.png" alt="Edit Icon" class="edit-icon">
+                    </div>
+                    <div class="input-overlay">
+                        <input type="file" id="image-upload" name="profile_picture" accept="image/*">
+                    </div>
+                </div>
                 <button class="edit-bio-btn" id="ButtonBioedit">Edit Bio</button>
             </div>
             <div class="new-info">
