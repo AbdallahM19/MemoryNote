@@ -108,7 +108,10 @@ async function editBio() {
     });
 }
 
+
+
 document.addEventListener('DOMContentLoaded', function(event) {
+    let user = {};
     const userProfile = document.getElementById('userProfile');
 
     // Fetch user data
@@ -116,12 +119,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        const user = data;
+        user = data;
         if (user) {
             const memoriesContainer = document.getElementById('memoriesContainer');
 
             const imageProfile = userProfile.querySelector('.profile-pic');
-            imageProfile.src = user.image;
+            imageProfile.src = user ? user.image : '../uploads/usericon.png';
+
+            // Change image profile
 
             // Update user profile information
             const username = document.getElementById('username');
@@ -172,4 +177,28 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     const buttoneditbio = userProfile.querySelector('.edit-bio-btn');
     buttoneditbio.addEventListener('click', editBio);
+
+    const imageUploader = userProfile.querySelector('.image-uploader');
+    const inputOverlay = userProfile.querySelector('.input-overlay input[type="file"]');
+    const imageUpload = document.getElementById('image-upload');
+
+    // Upload new image
+    imageUpload.addEventListener('change', function(event) {
+        const file = this.files[0];
+
+        const formData = new FormData();
+        formData.append('id', user['id']);
+        formData.append('image', file);
+
+        fetch('/upload-images', {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the image
+            imageUploader.querySelector('.profile-pic').src = `${data.imageUrl}`;
+        })
+        .catch(error => console.log('Error uploading image:', error));
+    });
 });
