@@ -33,7 +33,7 @@ To run this project locally, ensure you have the following installed:
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/yourusername/MemoryNote.git
+    git clone https://github.com/AbdallahM19/MemoryNote.git
     ```
 
 2. Open the project folder in your preferred code editor.
