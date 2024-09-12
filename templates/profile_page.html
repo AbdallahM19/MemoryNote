@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link rel="stylesheet" href="../static/memories_poster.css">
+    <link rel="stylesheet" href="../static/web_and_share_css/button.css">
     <link rel="stylesheet" href="../static/home_search.css">
     <link rel="stylesheet" href="../static/static_profile/header_profile.css">
     <link rel="stylesheet" href="../static/static_profile/profile_page.css">
@@ -36,7 +38,7 @@
 
     <!-- User Profile Section -->
     <section id="userProfile">
-        <div class="profile-container">
+        <!-- <div class="profile-container">
             <div class="profile-left">
                 <div class="image-uploader">
                     <div class="image-container">
@@ -50,9 +52,14 @@
                 <button class="edit-bio-btn" id="ButtonBioedit">Edit Bio</button>
             </div>
             <div class="new-info">
+                <label for="fullName">Full Name:</label>
                 <input type="text" id="fullName" placeholder="Full Name">
-                <textarea id="userBioedit" placeholder="Bio"></textarea>
+
+                <label for="userName">Username:</label>
                 <input type="text" id="userName" placeholder="Username">
+
+                <label for="userBioedit">Bio:</label>
+                <textarea id="userBioedit" placeholder="Bio"></textarea>
                 <button class="save-btn" id="save-btn" type="button">Save Data</button>
             </div>
             <div class="profile-right">
@@ -64,13 +71,14 @@
                     <p><strong>Followers:</strong> <span id="followerCount">followerscount</span></p>
                     <p><strong>Following:</strong> <span id="followingCount">followingcount</span></p>
                 </div>
+                <button id="followButton" class="follow-button">Follow</button>
             </div>
-        </div>
+        </div> -->
     </section>
 
     <!-- User Memories Section -->
-    <section id="userMemories">
-        <h2>fullname Memories</h2>
+    <section id="userMemories" class="memories_container">
+        <!-- <h2>Memories</h2>
 
         <div class="memory">
             <div class="memory-header">
@@ -94,7 +102,7 @@
                     <span>Delete</span>
                 </button>
             </div>
-        </div>
+        </div> -->
     </section>
 
     <script src="../static/static_profile/profile_page.js"></script>
