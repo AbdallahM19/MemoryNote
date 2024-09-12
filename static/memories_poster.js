@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', async (event) => {
-    event.preventDefault();
-
+async function createMomery() {
     const body = document.querySelector('body');
     const script = document.querySelector('script');
     const section = document.createElement('section');
@@ -20,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         const data = await response.json();
 
         for (const memory of data) {
+            let imagesElements = [];
             const [
                 memory_card_div,
                 memory_header_div,
@@ -28,11 +27,14 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             ] = Array.from({length: 4}, () => document.createElement('div'));
 
             const images = Array.isArray(memory.image) ? memory.image : [];
-            const imagesElements = images.map(imgUrl => `
-                <div class="memory-image">
-                    <img src="${imgUrl}" alt="Memory Image" class="memory-image">
-                </div>
-            `).join('');
+
+            if (Array.isArray(images) && images.length !== 0) {
+                imagesElements = images.map(imgUrl => `
+                    <div class="memory-image">
+                        <img src="${imgUrl}" alt="Memory Image" class="memory-image">
+                    </div>
+                `).join('');
+            }
 
             memory_card_div.className = 'memory-card';
             memory_card_div.id = memory['id'];
@@ -61,7 +63,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             const liked_list = current_user['memories']['liked'];
 
             memory_header_div.innerHTML = `
-                <img src="${user['image']}" alt="Profile Image" class="profile-img">
+                <a href="/profile-user/${user['id']}">
+                    <img src="${user['image']}" alt="Profile Image" class="profile-img">
+                </a>
                 <div class="user-info">
                     <h3 class="username">${user['username']}</h3>
                     <p class="memory-date">${memory['timestamp']}</p>
@@ -289,15 +293,25 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     } catch (error) {
         console.error('Error:', error);
     }
+}
 
-    async function fetchUserData(userId) {
-        try {
-            const response = await fetch(`/api/users/${userId}`);
-            const userData = await response.json();
-            return userData;
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            return null; // Handle error case
-        }
+async function fetchUserData(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`);
+        const userData = await response.json();
+        return userData;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return null; // Handle error case
     }
+}
+
+
+document.addEventListener('DOMContentLoaded', async (event) => {
+    event.preventDefault();
+
+    createMomery();
 });
+
+
+// export default { createMomery, fetchUserData };
