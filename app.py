@@ -15,7 +15,11 @@ memories_bp = Blueprint('memory', __name__)
 @users_bp.route('/users/<int:user_id>/', methods=['GET'])
 def get_users(user_id=None):
     """get all users data"""
+    if not users_module.current_user:
+        load_data_session_user()
+
     user_session = get_session()
+
     if user_id:
         if user_id == users_module.current_user['id']:
             user_session.close()
@@ -44,6 +48,7 @@ def get_users(user_id=None):
 @users_bp.route('/profile', methods=['GET', 'PUT'])
 @users_bp.route('/profile/', methods=['GET', 'PUT'])
 def get_profile():
+    """get current user data or update current user data"""
     if request.method == 'GET':
         return jsonify(users_module.current_user), 200
     elif request.method == 'PUT':
@@ -160,6 +165,23 @@ def get_memories(memory_id=None):
     return jsonify(memory_list)
 
 
+
+@memories_bp.route('/memory/user/<int:user_id>', methods=['GET'])
+def get_memories_user(user_id):
+    """get all memories of a user"""
+    memory_session = get_session()
+    if user_id:
+        memories = memory_session.query(Memory).filter(
+            Memory.user_id == user_id
+        ).all()
+        memory_list = []
+        for memory in memories:
+            memory_dict = memories_module.convert_object_to_dict_memory(memory)
+            memory_list.append(memory_dict)
+        return jsonify(memory_list)
+    return jsonify({"message": "user not found"})
+
+
 @memories_bp.route('/get-memories', methods=['GET'])
 def get_user_memories():
     """Get memories"""
@@ -181,6 +203,62 @@ def get_user_memories():
     )
     # print(memories_sorted)
     return jsonify(memories_sorted)
+
+
+@users_bp.route('/follow/<int:user_id>', methods=['GET', 'POST'])
+def follow_user(user_id):
+    if not users_module.current_user:
+        load_data_session_user()
+
+    user_session = get_session()
+
+    if request.method == 'GET':
+        user = user_session.query(Follower).filter(
+            and_(
+                Follower.user_id == users_module.current_user['id'],
+                Follower.follower_id == user_id
+            )
+        ).first()
+
+        return jsonify({"is_following": bool(user)}), 200
+
+    elif request.method == 'POST':
+        # Handle follow/unfollow action
+        user = user_session.query(Follower).filter(
+            and_(
+                Follower.user_id == users_module.current_user['id'],
+                Follower.follower_id == user_id
+            )
+        ).first()
+
+        if user:
+            user_session.delete(user)
+            user_session.query(User).filter(
+                User.id == users_module.current_user['id']
+            ).first().followingcount -= 1
+            user_session.query(User).filter(
+                User.id == user_id
+            ).first().followerscount -= 1
+            user_session.commit()
+            session['user']['followingcount'] -= 1
+            session['user']['following'].remove(user_id)
+            return jsonify({"message": "Unfollow", "is_following": False}), 200
+        else:
+            new_user = Follower(
+                user_id=users_module.current_user['id'],
+                follower_id=user_id
+            )
+            user_session.add(new_user)
+            user_session.query(User).filter(
+                User.id == users_module.current_user['id']
+            ).first().followingcount += 1
+            user_session.query(User).filter(
+                User.id == user_id
+            ).first().followerscount += 1
+            user_session.commit()
+            session['user']['followingcount'] += 1
+            session['user']['following'].append(user_id)
+            return jsonify({"message": "Follow", "is_following": True}), 200
 
 # ----------------------------------------------------------------
 # Image Routes
@@ -342,9 +420,9 @@ def search_page():
 
 
 @app.route('/profile-user', methods=['GET', 'POST'])
-@app.route('/profile-user/', methods=['GET', 'POST'])
+@app.route('/profile-user/<int:user_id>', methods=['GET', 'POST'])
 @load_user
-def profile_page():
+def profile_page(user_id=None):
     """Profile Page"""
     if is_authentication() is False:
         return redirect(url_for('login'))
