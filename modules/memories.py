@@ -78,7 +78,7 @@ class Memories():
             'title': memory.title,
             'timestamp': memory.timestamp,
             'description': memory.description,
-            'image':  (memory.image).split(','),
+            'image':  (memory.image).split(',') if memory.image else [],
             'share': memory.share,
             'type': memory.type,
             'calendar': memory.calendar,
