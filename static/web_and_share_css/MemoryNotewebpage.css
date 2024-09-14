@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+.header {
+    height: 100vh;
+    /* background-image: url('../web_images/download\ \(1\).jfif'); */
+
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    background: linear-gradient(    rgba(35, 34, 34, 0.837),    rgba(155, 145, 145, 0.5) );
+    /* background-color: rgb(18, 18, 18); */
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+.header-content {
+    text-align: center;
+    max-width: 600px;
+}
+.header-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.header-content p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+.btn-primary {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+}
+.features {
+    padding: 4rem 0;
+}
+.feature-icon {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+.cta-section {
+    background: linear-gradient(    rgba(35, 34, 34, 0.837),    rgba(155, 145, 145, 0.5) );
+    color: #ffffff;
+    padding: 4rem 0;
+    text-align: center;
+}
+.cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+footer {
+    background: linear-gradient(    rgba(35, 34, 34, 0.837),    rgba(155, 145, 145, 0.5) );
+    color: #ffffff;
+    padding: 2rem 0;
+}
+footer a {
+    color: #ffffff;
+    margin-right: 1rem;
+}
+.developer-section {
+    padding: 2rem 0;
+    background-color: #f1f1f1;
+    text-align: center;
+}
+.developer-section a {
+    color: #007bff;
+    margin: 0 1rem;
+    font-size: 1.25rem;
+}
+.navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+   
+}
