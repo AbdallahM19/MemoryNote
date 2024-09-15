@@ -1,3 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    background-color: #1a1a1a;
+}
+
 .memories_container {
     display: flex;
     flex-direction: column;
@@ -8,9 +17,9 @@
 }
 
 .memory-card {
-    background-color: rgb(44, 44, 44);
+    background-color: #2c2c2c;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     width: 100%;
     margin: 20px 0px;
     padding: 20px;
@@ -19,7 +28,7 @@
 
 .memory-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .memory-header {
@@ -27,8 +36,11 @@
     align-items: center;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #333;
     margin: auto;
+    position: relative;
+    z-index: 990; /* High enough to overlap with the logo */
+
 }
 
 .memory-header a {
@@ -39,10 +51,8 @@
 }
 
 .profile-img {
-    width: 100%;
-    height: 100%;
+    width: 20%;
     border-radius: 50%;
-    object-fit: cover;
     margin-right: 15px;
 }
 
@@ -55,13 +65,13 @@
 .username {
     font-size: 18px;
     font-weight: 600;
-    color: rgb(181, 181, 181);
+    color: #fff;
     margin: 0%;
 }
 
 .memory-date {
     font-size: 14px;
-    color: rgb(155, 154, 154);
+    color: #999;
     margin-top: 8px;
 }
 
@@ -78,15 +88,15 @@
     margin-right: 0%;
     transition: background-color 0.3s ease;
 }
-    
+
 .follow-button:hover {
     background-color: #2980b9;
 }
-    
+
 .follow-button:active {
     background-color: #34495e;
 }
-    
+
 .follow-button.following {
     background-color: #e74c3c;
     color: white;
@@ -99,31 +109,22 @@
 
 .memory-content p {
     font-size: 16px;
-    color: rgb(202, 202, 202);
+    color: #ccc;
     line-height: 1.6;
 }
 
 .memory-images {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
+    justify-content: space-evenly;
     margin-top: 20px;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
-.memory-image {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
 
 .memory-image:hover {
     transform: scale(1.01);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .memory-image::after {
@@ -144,8 +145,8 @@
 
 .memory-image img {
     display: block;
-    width: 100%;
-    height: auto;
+    max-width: 100% !important;
+    max-height: 100% !important;
     object-fit: cover;
     transition: filter 0.3s ease;
 }
@@ -154,20 +155,19 @@
     filter: brightness(70%);
 }
 
-
 .memory-footer {
     display: flex;
     justify-content: space-around;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #333;
     padding: 15px;
 }
 
 .action-button {
-    background-color: rgb(33, 33, 33);
+    background-color: #333;
     border: none;
     padding: 10px 20px;
     border-radius: 30px;
-    color: #b3b3b3;
+    color: #fff;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -182,22 +182,22 @@
 }
 
 .action-button:hover {
-    background-color: rgb(23, 162, 184);
+    background-color: #555;
     color: #fff;
 }
 
 .like-button:hover {
-    background-color: rgb(220, 53, 69);
+    background-color: #e74c3c;
     color: #fff;
 }
 
 .comment-button:hover {
-    background-color: rgb(40, 167, 69);
+    background-color: #2ecc71;
     color: #fff;
 }
 
 .share-button:hover {
-    background-color: rgb(0, 123, 255);
+    background-color: #03a9f4;
     color: #fff;
 }
 
@@ -216,10 +216,10 @@
 
 /* Modal Content */
 .modal-content-comment {
-    background-color: #ffffff; /* White background */
+    background-color: #2c2c2c; /* Dark background */
     margin: 15% auto; /* Centered vertically */
     padding: 20px;
-    border: 1px solid #cccccc; /* Light grey border */
+    border: 1px solid #333; /* Dark border */
     width: 80%; /* Max width */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
@@ -239,7 +239,7 @@
 
 /* Close Button */
 .close-button-comment {
-    color: #aaaaaa; /* Grey color */
+    color: #aaaaaa; /* Light grey color */
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -257,13 +257,15 @@
     padding: 12px 20px;
     margin: 8px 0;
     box-sizing: border-box;
-    border: 2px solid #cccccc; /* Light grey border */
+    border: 2px solid #333; /* Dark border */
     border-radius: 4px; /* Rounded corners */
     font-size: 16px;
+    color: #fff;
+    background-color: #2c2c2c;
 }
 
 .comment {
-    background-color: #f9f9f9; /* Light grey background */
+    background-color: #333; /* Dark background */
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px; /* Rounded corners */
@@ -273,7 +275,7 @@
 /* Author Name Styling (Assuming .author-name class exists within .comment) */
 .author-name {
     font-weight: bold;
-    color: #333; /* Dark grey for names */
+    color: #fff; /* White for names */
 }
 
 .comment-text {
@@ -284,7 +286,7 @@
 .memory-comment {
     display: flex;
     flex-direction: column;
-    background-color: #f9f9f9; /* Light grey background */
+    background-color: #333; /* Dark background */
     padding: 10px;
     border-radius: 5px; /* Rounded corners */
     border-left: 5px solid #007bff; /* Blue highlight for emphasis */
@@ -296,7 +298,7 @@
     align-items: flex-start; /* Align items at the start */
     margin-bottom: 10px; /* Space between comments */
     padding: 10px;
-    background-color: #f9f9f9; /* Light grey background for comments */
+    background-color: #333; /* Dark background for comments */
     border-radius: 5px; /* Rounded corners */
     border-left: 5px solid #007bff; /* Blue highlight for comments */
 }
@@ -324,17 +326,165 @@
 .comment-content h5 {
     margin: 0 0 5px; /* Margin around username */
     font-size: 16px; /* Font size for username */
-    color: #333; /* Dark grey for username */
+    color: #fff; /* White for username */
 }
 
 .comment-content h6 {
     margin: 0 0 10px; /* Margin around timestamp */
     font-size: 14px; /* Font size for timestamp */
-    color: #777; /* Lighter grey for timestamp */
+    color: #999; /* Lighter grey for timestamp */
 }
 
 .comment-content p {
     margin: 0; /* Remove margin for comment text */
     font-size: 15px; /* Font size for comment text */
-    color: #555; /* Darker grey for comment text */
+    color: #ccc; /* Lighter grey for comment text */
+}  
+
+
+
+
+.dropdown-toggle {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    font-size: 18px;
+    color: #fff;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 15px;
+    background-color: #2c2c2c;
+    border: 1px solid #333;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001; 
+    width: 200px;
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu button:hover {
+    background-color: #333;
+}
+
+.dropdown-toggle:focus + .dropdown-menu,
+.dropdown-menu:hover {
+    display: block;
+}
+
+
+.share_modal .modal-content-share {
+    background-color: #2c2c2c;
+    width: 60%;
+}
+
+.share_modal .close-button-share {
+    font-size: 70px;
+    color: salmon;
+    margin: 10%;
+}
+
+.share-link {
+    width: 100%;
+}
+.memory-header .header-left {
+    display: flex;
+    align-items: center;
+}
+
+
+
+.memory-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px; /* Maximum width for the container */
+}
+
+.memory-image {
+    flex: 1 0 33.33%; /* Take up 1/3 of the container width */
+    max-width: none; /* Allow images to keep their natural size */
+    height: auto;
+    margin: 10px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.memory-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Keep image at original size */
+    transition: filter 0.3s ease;
+}
+
+.memory-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.memory-image:hover img {
+    filter: brightness(70%);
+}
+
+.memory-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.memory-image:hover::after {
+    opacity: 1;
+}
+
+.memory-image img {
+    width: 97%;
+    height: 97%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.memory-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.memory-image {
+    flex-basis: calc(33.33% - 10px);
+    margin: 5px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
