@@ -2,8 +2,8 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-username = "ethar"
-password = "ethar2002"
+username = "root"
+password = "Abdallah%402004"
 host = "localhost"
 database = "memory_db"
 
