@@ -1,3 +1,6 @@
+import { goToSearchPage } from "./search.js";
+
+
 // Dropdown Functionality
 function setupDropdown(buttonId, dropdownId) {
     const button = document.getElementById(buttonId);
@@ -323,7 +326,9 @@ if (button && dropdown) {
 }
 
 // Initialize Functions
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     setupDropdown('shareButton', 'shareDropdown');
     setupDropdown('statusButton', 'statusDropdown');
+
+    await goToSearchPage();
 });
