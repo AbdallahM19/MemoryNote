@@ -7,7 +7,15 @@ from __init__ import *
 
 users_bp = Blueprint('user', __name__)
 memories_bp = Blueprint('memory', __name__)
+comments_bp = Blueprint('comment', __name__)
 
+
+session_db = get_session()
+
+
+# -----------------------------------------------
+# -{Api users}-----------------------------------
+# -----------------------------------------------
 
 @users_bp.route('/users', methods=['GET'])
 @users_bp.route('/users/', methods=['GET'])
@@ -18,28 +26,20 @@ def get_users(user_id=None):
     if not users_module.current_user:
         load_data_session_user()
 
-    user_session = get_session()
-
     if user_id:
         if user_id == users_module.current_user['id']:
-            user_session.close()
             return jsonify(users_module.current_user)
-        user = user_session.query(User).filter(
-            User.id == user_id
-        ).first()
+        user = users_module.get_user_by_id(user_id)
         if user:
             user_dict = users_module.convert_object_to_dict_user(user)
-            user_session.close()
             return jsonify(user_dict)
         else:
-            user_session.close()
             return jsonify({'error': 'User not found'}), 404
     users_list = []
-    users = user_session.query(User).all()
+    users = users_module.get_all_users()
     for user in users:
         user_dict = users_module.convert_object_to_dict_user(user)
         users_list.append(user_dict)
-    user_session.close()
     return jsonify(users_list)
 
 
@@ -57,22 +57,14 @@ def get_profile():
         for field in fields:
             if data.get(field) is not None and data[field] != "":
                 users_module.current_user[field] = data[field]
+
         password = data.get("password")
         if password:
             users_module.current_user["password"] = users_module.hash_password(password)
             users_module.current_user["confirmpass"] = password
         save_current_user_data_in_session()
-        user_session = get_session()
-        current_user = user_session.query(User).filter(
-            User.id == users_module.current_user['id']
-        ).first()
-        if current_user:
-            for field in fields:
-                setattr(current_user, field, users_module.current_user[field])
-            user_session.commit()
-            user_session.close()
-            return jsonify(users_module.current_user), 200
-        return jsonify({'error': 'User not found'}), 404
+        users_module.update_current_user_in_table_user()
+        return jsonify(users_module.current_user), 200
 
 
 @users_bp.route('/users/like/<int:memory_id>', methods=['POST'])
@@ -80,39 +72,12 @@ def add_or_minus_like(memory_id):
     """Add or minus like"""
     if not users_module.current_user:
         load_data_session_user()
-    # print(users_module.current_user)
-    # print(session.get('user'))
-    # print(session.get('user') == users_module.current_user)
-    # print(session.get('session_id'))
-    user_id = users_module.current_user['id']
+
     try:
-        session_table = get_session()
         if memory_id in users_module.current_user['memories']['liked']:
-            users_module.current_user['memories']['liked'].remove(memory_id)
-            session_table.query(Memory).filter(
-                Memory.id == memory_id
-            ).first().likes -= 1
-            session_table.delete(
-                session_table.query(LikeList).filter(
-                    and_(
-                        LikeList.memory_id == memory_id,
-                        LikeList.user_id == user_id
-                    )
-                ).first()
-            )
+            users_module.delete_like(memory_id)
         else:
-            users_module.current_user['memories']['liked'].append(memory_id)
-            session_table.query(Memory).filter(
-                Memory.id == memory_id
-            ).first().likes += 1
-            session_table.add(
-                LikeList(
-                    memory_id=memory_id,
-                    user_id=user_id
-                )
-            )
-        session_table.commit()
-        session_table.close()
+            users_module.add_like(memory_id)
         save_current_user_data_in_session()
         return jsonify({
             'message': True
@@ -127,21 +92,76 @@ def add_or_minus_like(memory_id):
 def update_profile():
     """Update profile"""
     data = request.get_json()
-    user_session = get_session()
-    user = user_session.query(User).filter(
-        User.id == users_module.current_user['id']
-    ).first()
-    if user:
-        user.fullname = users_module.current_user['fullname'] = data['fullname']
-        user.description = users_module.current_user['description'] = data['userbio']
-        user.username = users_module.current_user['username'] = data['username']
-        save_current_user_data_in_session()
-        user_session.commit()
-        user_session.close()
-        return jsonify({'message': 'Updated Successful'})
-    else:
-        return jsonify({'error': 'User not found'}), 404
+    users_module.current_user['fullname'] = data['fullname']
+    users_module.current_user['description'] = data['userbio']
+    users_module.current_user['username'] = data['username']
+    save_current_user_data_in_session()
+    users_module.update_current_user_in_table_user()
+    return jsonify({'message': 'Updated Successful'})
 
+
+@users_bp.route('/follow/<int:user_id>', methods=['GET', 'POST'])
+def follow_user(user_id):
+    if not users_module.current_user:
+        load_data_session_user()
+
+    if request.method == 'GET':
+        return jsonify({"is_following": bool(
+            users_module.get_follow_or_following(
+                user_id
+            )
+        )}), 200
+
+    elif request.method == 'POST':
+        user_to_follow = users_module.get_follow_or_following(user_id)
+        if user_to_follow:
+            session_db.delete(user_to_follow)
+
+            session_db.query(User).filter(
+                User.id == users_module.current_user['id']
+            ).first().followingcount -= 1
+
+            session_db.query(User).filter(
+                User.id == user_id
+            ).first().followerscount -= 1
+
+            users_module.current_user['followingcount'] -= 1
+            users_module.current_user['following'].remove(user_id)
+
+            session_db.commit()
+            session_db.close()
+
+            save_current_user_data_in_session()
+            print(users_module.current_user['following'])
+            print(users_module.current_user['followers'])
+            return jsonify({"message": "Unfollow", "is_following": False}), 200
+        else:
+            new_follower = Follower(
+                user_id=users_module.current_user['id'],
+                follower_id=user_id
+            )
+            session_db.add(new_follower)
+
+            session_db.query(User).filter(
+                User.id == users_module.current_user['id']
+            ).first().followingcount += 1
+
+            session_db.query(User).filter(
+                User.id == user_id
+            ).first().followerscount += 1
+
+            users_module.current_user['followingcount'] += 1
+            users_module.current_user['following'].append(user_id)
+
+            session_db.commit()
+            session_db.close()
+
+            save_current_user_data_in_session()
+            return jsonify({"message": "Follow", "is_following": True}), 200
+
+# --------------------------------------------------
+# -{Api memories}-----------------------------------
+# --------------------------------------------------
 
 @memories_bp.route('/memories', methods=['GET'])
 @memories_bp.route('/memories/', methods=['GET'])
@@ -149,36 +169,55 @@ def update_profile():
 @memories_bp.route('/memories/<int:memory_id>/', methods=['GET'])
 def get_memories(memory_id=None):
     """get all memories data"""
-    memory_session = get_session()
     if memory_id:
-        memory = memory_session.query(Memory).filter(Memory.id == memory_id).first()
+        memory = memories_module.get_memories_by_id(memory_id)
         if memory:
-            memory_dict = memories_module.convert_object_to_dict_memory(memory)
-            return jsonify(memory_dict)
+            return jsonify(
+                memories_module.convert_object_to_dict_memory(memory)
+            )
         else:
             return jsonify({"error": "memory not found"}), 404
-    memory_list = []
-    memories = memory_session.query(Memory).all()
-    for memory in memories:
-        memory_dict = memories_module.convert_object_to_dict_memory(memory)
-        memory_list.append(memory_dict)
-    return jsonify(memory_list)
 
+    memories = memories_module.get_memories()
+    return jsonify([
+        memories_module.convert_object_to_dict_memory(memory)
+        for memory in memories
+    ])
+
+
+@memories_bp.route('/query', methods=['GET'])
+def get_query_like_memories():
+    """get all memories data that match the query"""
+    query = request.args.get('query')
+    if query:
+        memories = memories_module.get_memories_for_search(
+            query, users_module.current_user['id']
+        )
+
+        users = users_module.get_users_for_search(query)
+
+        return jsonify({
+            "memories": memories,
+            "users": users
+        })
+    return jsonify({"error": "query not found"}), 404
 
 
 @memories_bp.route('/memory/user/<int:user_id>', methods=['GET'])
 def get_memories_user(user_id):
     """get all memories of a user"""
-    memory_session = get_session()
+    memories = memories_module.get_memories_for_user(user_id)
     if user_id:
-        memories = memory_session.query(Memory).filter(
-            Memory.user_id == user_id
-        ).all()
-        memory_list = []
-        for memory in memories:
-            memory_dict = memories_module.convert_object_to_dict_memory(memory)
-            memory_list.append(memory_dict)
-        return jsonify(memory_list)
+        memories_list = [
+            memories_module.convert_object_to_dict_memory(memory)
+            for memory in memories
+        ]
+        memories_sorted = sorted(
+            memories_list,
+            key=lambda x: datetime.strptime(x['timestamp'], '%a %b %d %H:%M:%S %Y'),
+            reverse=True
+        )
+        return jsonify(memories_sorted)
     return jsonify({"message": "user not found"})
 
 
@@ -186,8 +225,7 @@ def get_memories_user(user_id):
 def get_user_memories():
     """Get memories"""
     memory_list = []
-    memory_session = get_session()
-    memories = memory_session.query(Memory).filter(
+    memories = session_db.query(Memory).filter(
         or_(
             Memory.user_id == users_module.current_user["id"],
             Memory.type == 'Public'
@@ -201,64 +239,87 @@ def get_user_memories():
         key=lambda x: datetime.strptime(x['timestamp'], '%a %b %d %H:%M:%S %Y'),
         reverse=True
     )
+    session_db.close()
     # print(memories_sorted)
     return jsonify(memories_sorted)
 
 
-@users_bp.route('/follow/<int:user_id>', methods=['GET', 'POST'])
-def follow_user(user_id):
-    if not users_module.current_user:
-        load_data_session_user()
+@memories_bp.route('/edit-memory/<int:memory_id>', methods=['PUT', 'DELETE'])
+def edit_memory(memory_id):
+    """Edit memory"""
+    if request.method == 'PUT':
+        data = request.get_json()
+        memory_new_data = {
+            "title": data.get("title"),
+            "description": data.get("description"),
+            "type": data.get("type"),
+            "share": data.get("share"),
+            "timestamp": datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
+            "image": ",".join(data.get("image")) if data.get("image") else "",
+        }
+        is_success = memories_module.update_memory(
+            memory_id, memory_new_data
+        )
+        if is_success:
+            return jsonify({"message": "memory updated"})
+        return jsonify({"message": "memory not found"})
+    elif request.method == 'DELETE':
+        is_success = memories_module.delete_memory(memory_id)
+        if is_success:
+            for key, value in users_module.current_user['memories'].items():
+                if memory_id in value:
+                    users_module.current_user['memories'][key].remove(memory_id)
+            save_current_user_data_in_session()
+            return jsonify({"message": "memory deleted"})
+        return jsonify({"message": "memory not found"})
 
-    user_session = get_session()
+# ---------------------------------------------------
+# -{Api commments}-----------------------------------
+# ---------------------------------------------------
 
-    if request.method == 'GET':
-        user = user_session.query(Follower).filter(
-            and_(
-                Follower.user_id == users_module.current_user['id'],
-                Follower.follower_id == user_id
-            )
-        ).first()
+@comments_bp.route('/comments/<int:user_id>', methods=['GET'])
+def get_comments_by_user_id(user_id):
+    """Retrieve all comments by user_id."""
+    comments = comment_module.get_all_comments_by_user_id(user_id)
+    return jsonify(comments), 200
 
-        return jsonify({"is_following": bool(user)}), 200
+@comments_bp.route('/comments/memory/<int:memory_id>', methods=['GET'])
+def get_comments_by_memory_id(memory_id):
+    """Retrieve all comments for a memory_id."""
+    comments = comment_module.get_all_comments_by_memory_id(memory_id)
+    return jsonify(comments), 200
 
-    elif request.method == 'POST':
-        # Handle follow/unfollow action
-        user = user_session.query(Follower).filter(
-            and_(
-                Follower.user_id == users_module.current_user['id'],
-                Follower.follower_id == user_id
-            )
-        ).first()
+@comments_bp.route('/comments/memory/<int:memory_id>', methods=['POST'])
+def create_comment(memory_id):
+    """Create a new comment."""
+    data = request.get_json()
 
-        if user:
-            user_session.delete(user)
-            user_session.query(User).filter(
-                User.id == users_module.current_user['id']
-            ).first().followingcount -= 1
-            user_session.query(User).filter(
-                User.id == user_id
-            ).first().followerscount -= 1
-            user_session.commit()
-            session['user']['followingcount'] -= 1
-            session['user']['following'].remove(user_id)
-            return jsonify({"message": "Unfollow", "is_following": False}), 200
-        else:
-            new_user = Follower(
-                user_id=users_module.current_user['id'],
-                follower_id=user_id
-            )
-            user_session.add(new_user)
-            user_session.query(User).filter(
-                User.id == users_module.current_user['id']
-            ).first().followingcount += 1
-            user_session.query(User).filter(
-                User.id == user_id
-            ).first().followerscount += 1
-            user_session.commit()
-            session['user']['followingcount'] += 1
-            session['user']['following'].append(user_id)
-            return jsonify({"message": "Follow", "is_following": True}), 200
+    comment_text = data.get('comment')
+    user_id = users_module.current_user['id']
+
+    if not comment_text or not memory_id or not user_id:
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    new_comment = comment_module.insert_comment(comment_text, memory_id, user_id)
+    return jsonify(new_comment), 201
+
+@comments_bp.route('/comments/<int:comment_id>', methods=['PUT'])
+def update_comment(comment_id):
+    """Edit an existing comment."""
+    data = request.get_json()
+    data['comment_id'] = comment_id
+    comment_module.update_comment(data)
+    return jsonify({"message": "Comment updated"}), 200
+
+@comments_bp.route('/comments/<int:comment_id>', methods=['DELETE'])
+def delete_comment(comment_id):
+    """Delete a comment."""
+    success = comment_module.delete_comment(comment_id)
+    if success:
+        return jsonify({"message": "Comment deleted"}), 200
+    else:
+        return jsonify({"error": "Comment not found or deletion failed"}), 400
+
 
 # ----------------------------------------------------------------
 # Image Routes
@@ -309,12 +370,11 @@ def upload_images():
         session['user']['image'] = image_url
 
         # update current user image profile
-        user_session = get_session()
-        user_session.query(User).filter(
+        session_db.query(User).filter(
             User.id == user_id
         ).first().image = image_url
-        user_session.commit()
-        user_session.close()
+        session_db.commit()
+        session_db.close()
 
         return jsonify({'imageUrl': image_url})
     else:
@@ -326,7 +386,20 @@ def upload_images():
 # ----------------------------------------------------------------
 
 
+@app.route('/landing-page', methods=['GET'])
+def landing_page():
+    """Landing page route"""
+    return render_template('landing_page.html')
+
+
+@app.route('/web-page', methods=['GET'])
+def web_page():
+    """Web page route"""
+    return render_template('MemoryNotewebpage.html')
+
+
 @app.route('/', methods=['GET', 'POST', 'DELETE'])
+@app.route('/home', methods=['GET', 'POST', 'DELETE'])
 @app.route('/home/', methods=['GET', 'POST', 'DELETE'])
 @load_user
 def home_page():
@@ -340,7 +413,6 @@ def home_page():
         )
     elif request.method == 'POST':
         data = request.get_json()
-        memory_session = get_session()
         new_memory_data = {
             "user_id": users_module.current_user['id'],
             "title": data['title'] if data['title'] else datetime.now().strftime("%a %H:%M:%S %d:%m:%Y"),
@@ -362,20 +434,7 @@ def home_page():
                 }
             ]
         }
-        new_memory = Memory(
-            user_id = new_memory_data['user_id'],
-            title = new_memory_data['title'],
-            timestamp = new_memory_data['timestamp'],
-            description = new_memory_data['description'],
-            image = ','.join(new_memory_data['image']),
-            share = new_memory_data['share'],
-            type = new_memory_data['type'],
-            calendar = new_memory_data['calendar'],
-            likes = new_memory_data['liked']
-        )
-        memory_session.add(new_memory)
-        memory_session.commit()
-        memory_session.close()
+        memories_module.create_new_memory(new_memory_data)
         return jsonify({'message': 'True'})
     elif request.method == 'DELETE':
         return jsonify({'message': 'Home Page - DELETE'})
@@ -383,37 +442,49 @@ def home_page():
         return jsonify({'error': 'Method not allowed'}), 405
 
 
+# @app.route('/search', methods=['GET'])
+# @load_user
+# def search_page():
+#     """Home"""
+#     if is_authentication() is False:
+#         return redirect(url_for('login'))
+#     if request.method == 'GET':
+#         query = request.args.get('query')
+#         if query:
+#             memories_list = []
+#             users_list = []
+#             session_table = get_session()
+
+#             memories = session_table.query(Memory).filter(
+#                 Memory.title.like('%{}%'.format(query))
+#             ).all()
+
+#             for memory in memories:
+#                 i = memories_module.convert_object_to_dict_memory(memory)
+#                 memories_list.append(i)
+
+#             users = session_table.query(User).filter(
+#                 User.username.like('%{}%'.format(query))
+#             ).all()
+
+#             for user in users:
+#                 i = users_module.convert_object_to_dict_user(user)
+#                 users_list.append(i)
+
+#             session_table.close()
+#             return render_template('search.html', memories=memories_list, users=users_list)
+#         return render_template('search.html')
+#     else:
+#         return jsonify({'error': 'Method not allowed'}), 405
+
 @app.route('/search', methods=['GET'])
 @load_user
 def search_page():
     """Home"""
     if is_authentication() is False:
         return redirect(url_for('login'))
+
     if request.method == 'GET':
-        query = request.args.get('query')
-        if query:
-            memories_list = []
-            users_list = []
-            session_table = get_session()
-
-            memories = session_table.query(Memory).filter(
-                Memory.title.like('%{}%'.format(query))
-            ).all()
-
-            for memory in memories:
-                i = memories_module.convert_object_to_dict_memory(memory)
-                memories_list.append(i)
-
-            users = session_table.query(User).filter(
-                User.username.like('%{}%'.format(query))
-            ).all()
-
-            for user in users:
-                i = users_module.convert_object_to_dict_user(user)
-                users_list.append(i)
-
-            session_table.close()
-            return render_template('search.html', memories=memories_list, users=users_list)
         return render_template('search.html')
     else:
         return jsonify({'error': 'Method not allowed'}), 405
@@ -432,7 +503,7 @@ def profile_page(user_id=None):
         return jsonify({'error': 'Method not allowed'}), 405
 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 @load_user
 def login():
     """login page"""
@@ -442,29 +513,12 @@ def login():
         return render_template('login.html')
     try:
         data = request.get_json()
-        # user_data = mysql_db.check_user_if_exists(
-        #     data['username'], data['password']
-        # )
-        # user_data = users_module.convert_tuple_to_dict_user(
-        #     user_data
-        # )
-        user_session = get_session()
-        user_data = users_module.convert_object_to_dict_user(
-            user_session.query(User).filter(
-                or_(
-                    User.username == data['username'],
-                    User.email == data['username']
-                )
-            ).first()
+        user_data = users_module.authenticate_user(
+            data['username'], data['password']
         )
-        user_session.close()
-        if user_data and type(user_data) == dict and (
-            users_module.is_valid(user_data['password'], data['password']) or
-            user_data['confirmpass'] == data['password']
-        ):
-            users_module.current_user = user_data
-            session['session_id'] = user_data['session_id']
+        if user_data and type(user_data) == dict:
             session['user'] = user_data
+            session['session_id'] = user_data['session_id']
             return jsonify({'message': 'Login successful'})
         else:
             return jsonify({'message': 'email not found'}), 401
@@ -473,7 +527,7 @@ def login():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/register/', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 @load_user
 def register():
     """register"""
@@ -484,19 +538,18 @@ def register():
     try:
         data = request.get_json()
 
-        session_table = get_session()
-        user = session_table.query(User).filter(
+        existing_user = session_db.query(User).filter(
             or_(
                 User.username == data['username'],
                 User.email == data['email']
             )
         ).first()
 
-        if user:
-            if user.username:
-                return jsonify({'message': 'username already exists'}), 400
-            if user.email:
-                return jsonify({'message': 'email already exists'}), 400
+        if existing_user:
+            if existing_user.username == data['username']:
+                return {'message': 'username already exists'}, 400
+            if existing_user.email == data['email']:
+                return {'message': 'email already exists'}, 400
 
         new_user_data = {
             "fullname": data['fullname'],
@@ -538,9 +591,8 @@ def register():
             followingcount=new_user_data['followingcount'],
             followerscount=new_user_data['followerscount'],
         )
-        session_table.add(new_user)
-
-        session_table.commit()
+        session_db.add(new_user)
+        session_db.commit()
 
         user_id = new_user.id
         new_user_data['id'] = user_id
@@ -548,9 +600,8 @@ def register():
         session['session_id'] = new_user_data['session_id']
         session['user'] = new_user_data
 
-        session_table.close()
-
-        return jsonify({'message': 'Register successful'})
+        session_db.close()
+        return jsonify({'message': 'Register successful'}), 201
     except Exception as e:
         print("Error occurred:", str(e))
         return jsonify({'error': str(e)}), 500
@@ -579,6 +630,7 @@ def  logout():
 # Register blueprints after defining all routes
 app.register_blueprint(users_bp, url_prefix='/api')
 app.register_blueprint(memories_bp, url_prefix='/api')
+app.register_blueprint(comments_bp, url_prefix='/api')
 
 
 def main():
@@ -588,9 +640,14 @@ def main():
     # print(__name__)
     # session['session_id'] = '0000'
     # mysql_db.create_database()
-    create_database()
-    create_tables()
+    # ----------------------------------------------------
+    # create_database()
+    # create_tables()
     app.run(host="127.0.0.1", port=5000, debug=True)
+    session_db.close()
+    users_module.sess.close()
+    memories_module.sess.close()
+    # ----------------------------------------------------
     # print(datetime.now())
     # print(datetime.now().strftime("%H:%M:%S %a %d:%m:%Y"))
     # for i in dir():
