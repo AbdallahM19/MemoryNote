@@ -1,1 +1,152 @@
+/* Memories Container */
+.memories_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    width: 70%;
+    padding: 20px;
+}
 
+.memories_container h1 {
+    font-size: 36px;
+    color: rgb(30, 106, 255);
+}
+
+.memories_container .memories-results,
+.memories-results .search-results {
+    width: 100%;
+    position: relative;
+    margin: auto;
+    padding-right: 40px;
+}
+
+.memories-results h2,
+.users-results h2 {
+    color: rgb(255, 128, 17);
+}
+
+/* Users Results Section */
+.memories_container .users-results,
+.users-results .search-results {
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.users-results {
+    padding: 2rem;
+}
+
+.users-results .search-results {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* User Search Result Container */
+.user-search-result {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 100%; /* Ensures container doesn't exceed its parent */
+    width: 100%; /* Fills available width */
+    box-sizing: border-box; /* Includes padding and border in width */
+}
+
+/* View Profile Button */
+.view-profile {
+    width: 100%;
+    background-color: #1db954;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0 0 10px 10px; /* rounded corners at bottom */
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Ensure padding doesn't overflow */
+    margin-top: auto; /* Push the button to the bottom of the container */
+}
+
+.view-profile:hover {
+    background-color: #1ed760;
+}
+
+/* User Profile Section */
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+/* Profile Picture */
+.profile-picture {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 20px;
+    border: 2px solid #1db954;
+    object-fit: cover;
+}
+
+/* User Info Section */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Username Style */
+.username {
+    font-size: 1.5em;
+    color: #f0f0f0;
+    margin: 0;
+}
+
+/* Bio Text */
+.bio {
+    font-size: 0.9em;
+    color: #b3b3b3;
+    margin: 5px 0 0;
+}
+
+/* FontAwesome Icon Styles */
+.view-profile i {
+    margin-right: 8px;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .search-results {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .search-results {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .users-results h2 {
+        font-size: 1.75rem;
+    }
+
+    .search-results {
+        grid-template-columns: 1fr;
+    }
+}
