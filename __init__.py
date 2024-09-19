@@ -12,6 +12,7 @@ import os
 
 users_module = Users()
 memories_module = Memories()
+comment_module = Comments_class()
 
 
 app = Flask(__name__)
