@@ -20,9 +20,16 @@ profileButton.addEventListener('click', (event) => {
     .then(data => {
         image_value = data.image;
         profileModal.querySelector('.profile-image').src = data.image;
-        profileModal.querySelector('.full-name').textContent = data.fullName;
+        profileModal.querySelector('.full-name').textContent = data.fullname;
+        profileModal.querySelector('.full-name').style.color = 'rgb(0, 0, 0)';
         profileModal.querySelector('.username').textContent = data.username;
+        profileModal.querySelector('.username').style.color = 'rgb(0, 0, 0)';
         profileModal.querySelector('.email').textContent = data.email;
+        profileModal.querySelector('.email').style.color = 'rgb(0, 0, 0)';
+
+        document.getElementById('editFullName').value = profileModal.querySelector('.full-name').textContent;
+        document.getElementById('editUsername').value = profileModal.querySelector('.username').textContent;
+        document.getElementById('editEmail').value = profileModal.querySelector('.email').textContent;
         profileModal.style.display = 'block';
     })
     .catch(error => {
