@@ -1,37 +1,225 @@
-/* Edit form styling */
-.edit-form {
-    padding: 20px;
-    background-color: #f9f9f9;
-    margin-top: 10px;
+.edit-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    transition: opacity 0.3s ease-in-out;
 }
 
-.edit-form label {
+.edit-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0, 0, 0);
+    z-index: -1;
+}
+
+.edit-modal .modal-content-edit {
+    width: auto;
+    height: 100%;
+    background-color: #000000;
+    box-shadow: 0 4px 8px rgb(0, 0, 0);
+    padding: 30px 100px;
+    margin: auto;
+    position: relative;
+    overflow-y: auto;
+}
+
+.edit-modal .close-button-edit {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.edit-modal .close-button-edit:hover {
+    color: #007bff;
+}
+
+.edit-modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.edit-modal .form-group {
+    margin-bottom: 25px;
+}
+
+.edit-modal label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     font-weight: bold;
+    color: #e9ecef;
+    line-height: 1.2;
 }
 
-.edit-form input[type="text"],
-.edit-form textarea {
+.edit-modal input,
+.edit-modal textarea,
+.edit-modal select {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.edit-modal input:focus,
+.edit-modal textarea:focus,
+.edit-modal select:focus {
+    outline: none;
+    background-color: rgb(66, 66, 66);
+    box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.5);
+}
+
+.edit-modal textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+.edit-modal button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 50px;
+}
+
+.edit-modal button[type="submit"]:hover {
+    background-color: var(--secondary-color);
+}
+
+.edit-modal.memory-images {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.edit-modal.memory-image img {
+    max-width: 200px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.edit-modal.memory-image img:hover {
+    transform: scale(1.05);
+}
+
+.edit-modal.memory-image img:not(:last-child) {
     margin-bottom: 10px;
 }
 
-.edit-form .save-button,
-.edit-form .cancel-button {
-    padding: 10px 20px;
-    margin-right: 10px;
+/* Responsive design */
+@media (min-width: 768px) {
+    .edit-modal.memory-images {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
 }
 
-.edit-form .save-button {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
+@media (max-width: 768px) {
+    .edit-modal.memory-images {
+        grid-template-columns: 1fr;
+    }
 }
 
-.edit-form .cancel-button {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
+/* Dark mode toggle */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121212;
+        --text-color: #ffffff;
+        --primary-color: #007bff;
+        --secondary-color: #6c757d;
+        --border-color: #dee2e6;
+        --card-bg: #1a1a1a;
+        --card-border: #2c2c2c;
+    }
+
+    .edit-modal::before {
+        background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .close-button-edit {
+        color: var(--secondary-color);
+    }
+
+    button[type="submit"] {
+        background-color: var(--primary-color);
+    }
+
+    button[type="submit"]:hover {
+        background-color: var(--secondary-color);
+    }
+
+    label {
+        color: var(--text-color);
+    }
+
+    input,
+    textarea,
+    select {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+}
+
+/* Light mode toggle */
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #212529;
+        --primary-color: #007bff;
+        --secondary-color: #6c757d;
+        --border-color: #dee2e6;
+        --card-bg: #fff;
+        --card-border: #e9ecef;
+    }
+
+    .edit-modal::before {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .close-button-edit {
+        color: var(--secondary-color);
+    }
+
+    button[type="submit"] {
+        background-color: var(--primary-color);
+    }
+
+    button[type="submit"]:hover {
+        background-color: var(--secondary-color);
+    }
+
+    label {
+        color: var(--text-color);
+    }
+
+    input,
+    textarea,
+    select {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
 }
