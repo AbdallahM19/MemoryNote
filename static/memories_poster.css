@@ -48,12 +48,15 @@ body {
     height: 50px;
     background-color: #e74c3c;
     border-radius: 50%;
+    margin-right: 12px;
+    margin-top: 5px;
 }
 
-.profile-img {
-    width: 20%;
+.memory-header .profile-img {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    margin-right: 15px;
+    object-fit: cover;
 }
 
 .user-info {
@@ -182,7 +185,7 @@ body {
 }
 
 .action-button:hover {
-    background-color: #555;
+    background-color: rgb(85, 85, 85);
     color: #fff;
 }
 
@@ -203,156 +206,304 @@ body {
 
 /* Comment Modal Background */
 .comment_modal {
-    display: none; /* Initially hidden */
+    display: none;
     position: fixed;
-    z-index: 1000; /* Ensure it's above other content */
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* Hide overflow */
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay */
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* Modal Content */
 .modal-content-comment {
-    background-color: #2c2c2c; /* Dark background */
-    margin: 15% auto; /* Centered vertically */
-    padding: 20px;
-    border: 1px solid #333; /* Dark border */
-    width: 80%; /* Max width */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    background-color: #1a1a1a;
+    margin: 5% auto;
+    padding: 25px;
+    border: 1px solid #444;
+    width: 85%;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     position: relative;
-    height: 70vh; /* Fixed height for the modal content */
-    overflow: hidden; /* Hide overflow within modal content */
+    height: 75vh;
+    overflow: hidden;
 }
 
 /* Comments List */
 .comments-list {
-    max-height: 50vh; /* Max height for comments list */
-    overflow-y: auto; /* Enable vertical scrolling if needed */
-    margin-top: 15px;
+    max-height: 55vh;
+    overflow-y: auto;
+    margin-top: 20px;
     padding: 0;
-    list-style-type: none; /* Remove default list style */
+    list-style-type: none;
 }
 
 /* Close Button */
 .close-button-comment {
-    color: #aaaaaa; /* Light grey color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 50px;
 }
 
 .close-button-comment:hover,
 .close-button-comment:focus {
-    color: #ff0000; /* Red color on hover/focus for emphasis */
+    color: #ff0000;
+}
+
+/* Dropdown Button */
+.dropdown-btn {
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    width: 32px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(60, 60, 60);
+    border-radius: 50px;
+}
+
+.dropdown-btn:hover {
+    background-color: rgb(90, 90, 90);
+    color: rgb(0, 0, 0);
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgb(94, 94, 94);
+    min-width: 120px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0;
+}
+
+/* Dropdown Items */
+.dropdown-content button {
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: left;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown-content button:hover {
+    background-color: rgb(78, 78, 78);
+    color: rgb(255, 255, 255);
+}
+
+/* Input Container */
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
 }
 
 /* Input Field for Comments */
 .commentInput {
-    width: 100%;
+    width: 80%;
     padding: 12px 20px;
     margin: 8px 0;
     box-sizing: border-box;
-    border: 2px solid #333; /* Dark border */
-    border-radius: 4px; /* Rounded corners */
+    border: 2px solid #333;
+    border-radius: 4px;
     font-size: 16px;
     color: #fff;
     background-color: #2c2c2c;
+    outline: none;
+}
+
+.post-comment-btn {
+    background-color: #1877f2;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 20%;
+    height: 44px;
+    font-size: 22px;
+}
+
+.post-comment-btn:hover {
+    background-color: rgb(72, 139, 255);
 }
 
 .comment {
-    background-color: #333; /* Dark background */
+    background-color: #333;
     padding: 10px;
     margin-bottom: 10px;
-    border-radius: 5px; /* Rounded corners */
-    border-left: 5px solid #007bff; /* Blue highlight for new comments */
+    border-radius: 5px;
+    border-left: 5px solid #007bff;
 }
 
 /* Author Name Styling (Assuming .author-name class exists within .comment) */
 .author-name {
     font-weight: bold;
-    color: #fff; /* White for names */
+    color: #fff;
 }
 
 .comment-text {
-    margin-left: 10px; /* Indent text slightly */
+    margin-left: 10px;
 }
 
 /* Comment Container Styling */
 .memory-comment {
     display: flex;
     flex-direction: column;
-    background-color: #333; /* Dark background */
+    background-color: #333;
     padding: 10px;
-    border-radius: 5px; /* Rounded corners */
-    border-left: 5px solid #007bff; /* Blue highlight for emphasis */
+    border-radius: 5px;
+    border-left: 5px solid #007bff;
 }
 
 /* Comment Item */
 .comment-item {
     display: flex;
-    align-items: flex-start; /* Align items at the start */
-    margin-bottom: 10px; /* Space between comments */
+    align-items: center;
+    margin-bottom: 10px;
     padding: 10px;
-    background-color: #333; /* Dark background for comments */
-    border-radius: 5px; /* Rounded corners */
-    border-left: 5px solid #007bff; /* Blue highlight for comments */
+    background-color: #333;
+    border-radius: 5px;
+    border-left: 5px solid #007bff;
 }
 
 /* Commenter Image */
 .commenter-img {
-    width: 50px; /* Fixed width */
-    height: 50px; /* Fixed height */
-    border-radius: 50%; /* Circular image */
-    object-fit: cover; /* Ensure the image covers the area without stretching */
-    margin-right: 15px; /* Space between image and comment text */
-    transition: transform 0.3s ease; /* Smooth transition for hover effect */
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 18px;
+    transition: transform 0.3s ease;
 }
 
 .commenter-img:hover {
-    transform: scale(1.1); /* Slightly enlarge image on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#edit-comment {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+    flex: 1;
+}
+
+#edit-comment h5 {
+    margin-bottom: 10px;
+}
+
+.edit-comment-input {
+    width: 95%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.save-comment-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.save-comment-btn:hover {
+    background-color: #0056b3;
+}
+
+.cancel-edit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.cancel-edit-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 /* Comment Content */
 .comment-content {
-    flex: 1; /* Allow content to take up remaining space */
+    flex: 1;
+}
+
+.comment-options {
+    position: relative;
 }
 
 .comment-content h5 {
-    margin: 0 0 5px; /* Margin around username */
-    font-size: 16px; /* Font size for username */
-    color: #fff; /* White for username */
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #ffffff;
 }
 
 .comment-content h6 {
-    margin: 0 0 10px; /* Margin around timestamp */
-    font-size: 14px; /* Font size for timestamp */
-    color: #999; /* Lighter grey for timestamp */
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: #999999;
 }
 
 .comment-content p {
-    margin: 0; /* Remove margin for comment text */
-    font-size: 15px; /* Font size for comment text */
-    color: #ccc; /* Lighter grey for comment text */
-}  
+    margin: 0;
+    font-size: 16px;
+    color: #cccccc;
+}
 
-
-
-
+/* dropdown */
 .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: transparent;
     border: none;
     padding: 5px;
     font-size: 18px;
     color: #fff;
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: 25px;
+    right: 10px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+}
+
+.dropdown-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #000;
+}
+
+.dropdown-toggle:focus{
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #000;
 }
 
 .dropdown-menu {
@@ -441,7 +592,7 @@ body {
 }
 
 .memory-image:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
