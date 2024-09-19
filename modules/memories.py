@@ -1,74 +1,122 @@
-from os import path
-from json import dump, load
+from modules.database import Memory, LikeList, Comment, get_session
+from __init__ import or_, and_
 
 
 class Memories():
     """Memories class"""
     def __init__(self):
-        self.filename = 'memories.json'
-        self.memories = self.load_memories_data()
+        self.sess = get_session()
 
-    def check_if_file_exists(self):
-        """check if file exists"""
-        return path.exists(self.filename)
-
-    def load_memories_data(self):
-        """load memories data from json file"""
-        if self.check_if_file_exists() is True:
-            with open(self.filename, 'r') as f:
-                return load(f)
-        else:
-            return []
-    
     def get_memories_by_id(self, memory_id):
         """get memory by id function"""
-        self.reload_memories_data()
-        for memory in self.memories:
-            if memory['id'] == int(memory_id):
-                return memory
+        memory = self.sess.query(Memory).filter(
+            Memory.id == memory_id
+        ).first()
+        self.sess.close()
+        return memory
 
-    def save_memories_data(self, data):
-        """Save memory data to a JSON file."""
-        self.memories.append(data)
-        with open(self.filename, 'w') as f:
-            dump(self.memories, f, indent=4)
+    def get_memories(self):
+        """get memory by id function"""
+        memories = self.sess.query(Memory).all()
+        self.sess.close()
+        return memories
 
-    def save_all_memories_data(self):
-        """Save memory data to a JSON file."""
-        with open(self.filename, 'w') as f:
-            dump(self.memories, f, indent=4)
+    def get_memories_for_user(self, user_id):
+        """get memory by user_id function"""
+        memories = self.sess.query(Memory).filter(
+            Memory.user_id == user_id
+        ).all()
+        self.sess.close()
+        return memories
 
-    def reload_memories_data(self):
-        """Reload memories data from the JSON file"""
-        self.memories = self.load_memories_data()
-
-    def search_memories_data(self, query):
-        """Search memories data by query"""
-        self.reload_memories_data()
+    def get_memories_for_search(self, query, user_id):
+        """get memory by search function"""
+        memories = self.sess.query(Memory).filter(
+            or_(
+                and_(
+                    or_(
+                        Memory.title.like('%{}%'.format(query)),
+                        Memory.description.like('%{}%'.format(query))
+                    ),
+                    Memory.share == 'Everyone',
+                    Memory.type == 'Public'
+                ),
+                and_(
+                    Memory.user_id == user_id,
+                    or_(
+                        Memory.title.like('%{}%'.format(query)),
+                        Memory.description.like('%{}%'.format(query))
+                    )
+                )
+            )
+        ).all()
+        self.sess.close()
         return [
-            memory for memory in self.memories if query.lower() in memory['title'].lower() and memory['type'] not in ['Private', 'Draft', 'Schedule']
+            self.convert_object_to_dict_memory(memory)
+            for memory in memories
         ]
 
-    def get_all_memories(self, user_id):
-        """get memories function"""
-        self.reload_memories_data()
-        return [
-            memory for memory in self.memories
-            if memory['user_id'] == int(user_id) or memory['type'] == 'Public'
-        ]
+    def create_new_memory(self, new_memory_data):
+        """create new memory function"""
+        try:
+            new_memory = Memory(
+                user_id = new_memory_data['user_id'],
+                title = new_memory_data['title'],
+                timestamp = new_memory_data['timestamp'],
+                description = new_memory_data['description'],
+                image = ','.join(new_memory_data['image']),
+                share = new_memory_data['share'],
+                type = new_memory_data['type'],
+                calendar = new_memory_data['calendar'],
+                likes = new_memory_data['liked']
+            )
+            self.sess.add(new_memory)
+            self.sess.commit()
+        except Exception as e:
+            print("error occurred while creating memory {}".format(e))
+            self.sess.rollback()
+        finally:
+            self.sess.close()
 
-    def add_or_minus_like_function(self, memory_id, character):
-        """add or minus like function"""
-        self.reload_memories_data()
-        for memory in self.memories:
-            if memory['id'] == memory_id:
-                if character == 'T':
-                    memory['likes'] += 1
-                elif character == 'F':
-                    memory['likes'] -= 1
-                self.save_all_memories_data()
+    def update_memory(self, memory_id, memory_new_data):
+        """update memory function"""
+        try:
+            memory = self.sess.query(Memory).filter(
+                Memory.id == memory_id
+            ).first()
+            if memory:
+                for key, value in memory_new_data.items():
+                    setattr(memory, key, value)
+                self.sess.commit()
                 return True
-        return False
+            return False
+        except Exception as e:
+            print("error occurred while updating memory {}".format(e))
+            self.sess.rollback()
+        finally:
+            self.sess.close()
+
+    def delete_memory(self, memory_id):
+        """delete memory function"""
+        try:
+            memory = self.get_memories_by_id(memory_id)
+            self.sess.delete(memory)
+
+            self.sess.query(LikeList).filter(
+                LikeList.memory_id == memory_id
+            ).delete()
+
+            self.sess.query(Comment).filter(
+                Comment.memory_id == memory_id
+            ).delete()
+
+            self.sess.commit()
+            return True
+        except Exception as e:
+            print("error occurred while deleting memory {}".format(e))
+            self.sess.rollback()
+        finally:
+            self.sess.close()
 
     def convert_object_to_dict_memory(self, memory):
         """Convert memory object to dictionary."""
