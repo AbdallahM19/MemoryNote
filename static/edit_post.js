@@ -1,146 +1,155 @@
-// Create the form div
-const editFormDiv = document.createElement('div');
-editFormDiv.className = 'edit-form';
+// Function to create the Edit Modal
+export function createEditModal(memory) {
+    const modal = document.createElement('div');
+    modal.className = 'edit-modal';
+    modal.innerHTML = `
+        <div class="modal-content-edit">
+            <span class="close-button-edit">&times;</span>
+            <h2>Edit Memory</h2>
+            <form id="editMemoryForm_${memory.id}">
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" value="${memory.title || ''}" required>
+                </div>
 
-// Build the form HTML
-editFormDiv.innerHTML = `
-    <form id="editForm_${memory['id']}">
-        <label for="title_${memory['id']}">Title:</label>
-        <input type="text" id="title_${memory['id']}" name="title" value="${memory['title'] || ''}" />
-        <label for="description_${memory['id']}">Description:</label>
-        <textarea id="description_${memory['id']}" name="description">${memory['description'] || ''}</textarea>
-        <label for="images_${memory['id']}">Images:</label>
-        <input type="file" id="images_${memory['id']}" name="images" multiple />
-        <button type="submit" class="save-button">Save</button>
-        <button type="button" class="cancel-button">Cancel</button>
-    </form>
-`;
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description">${memory.description}</textarea>
+                </div>
 
-// Append the form to the memory card div
-memory_card_div.appendChild(editFormDiv);
+                <!-- Type -->
+                <div class="form-group">
+                    <label for="type">Type:</label>
+                    <select id="type" name="type">
+                        <option value="Draft">Draft</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
+                    </select>
+                </div>
 
-// Add event listener for form submission
-const editForm = document.getElementById(`editForm_${memory['id']}`);
-editForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
+                <!-- Share -->
+                <div class="form-group">
+                    <label for="share">Share:</label>
+                    <select id="share" name="share">
+                        <option value="Just Me">Just Me</option>
+                        <option value="Friends">Friends</option>
+                        <option value="Everyone">Everyone</option>
+                    </select>
+                </div>
 
-    // Get the updated data from the form
-    const formData = new FormData();
-    Object.entries(editForm.elements).forEach(([name, element]) => {
-        if (element.name) {
-            formData.append(element.name, element.value);
-        }
-    });
-    const title = formData.get('title');
-    const description = formData.get('description');
-    const imagesFiles = editForm.querySelector(`#images_${memory['id']}`).files;
+                <!-- Memory Images -->
+                <div class="form-group">
+                    <h3>Memory Images:</h3>
+                    <div class="memory-images"></div>
+                </div>
 
-    // If images are uploaded, we need to handle file uploads
-    let images = [];
-    if (imagesFiles.length > 0) {
-        // Upload images to the server and get the image URLs
-        const imageUploadFormData = new FormData();
-        for (const file of imagesFiles) {
-            imageUploadFormData.append('images', file);
-        }
-        try {
-            const uploadResponse = await fetch('/upload-images', {
-                method: 'POST',
-                body: imageUploadFormData
-            });
-            const uploadResult = await uploadResponse.json();
-            images = uploadResult.imagePaths;
-        } catch (uploadError) {
-            console.error('Error uploading images:', uploadError);
-            return;
-        }
-    } else {
-        images = memory['image'];
-    }
-
-    // Prepare the data to send in the PUT request
-    const updatedMemoryData = {
-        title: title,
-        description: description,
-        image: images
-    };
-
-    // Send PUT request to update the memory
-    try {
-        const updateResponse = await fetch(`/api/memories/${memory['id']}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(updatedMemoryData)
-        });
-        const updateResult = await updateResponse.json();
-
-        if (updateResponse.ok) {
-            // Update the memory content with the new data
-            memory['title'] = title;
-            memory['description'] = description;
-            memory['image'] = images;
-
-            // Update the UI
-            updateMemoryContent(memory, memory_content_div, memory_header_div);
-
-            // Remove the edit form
-            memory_card_div.removeChild(editFormDiv);
-
-            // Show the memory content
-            memory_content_div.style.display = 'block';
-        } else {
-            console.error('Error updating memory:', updateResult.error);
-        }
-    } catch (updateError) {
-        console.error('An error occurred while updating the memory:', updateError);
-    }
-});
-
-// Add event listener for cancel button
-const cancelButton = editForm.querySelector('.cancel-button');
-cancelButton.addEventListener('click', function() {
-    // Remove the edit form
-    memory_card_div.removeChild(editFormDiv);
-
-    // Show the memory content
-    memory_content_div.style.display = 'block';
-});
-
-function updateMemoryContent(memory, memory_content_div, memory_header_div) {
-    let imagesElements = [];
-    const images = Array.isArray(memory.image) ? memory.image : [];
-
-    if (Array.isArray(images) && images.length !== 0) {
-        imagesElements = images.map(imgUrl => `
-            <div class="memory-image">
-                <img src="${imgUrl}" alt="Memory Image" class="memory-image">
-            </div>
-        `).join('');
-    }
-
-    // Update the memory content
-    memory_content_div.innerHTML = `
-        <p>${memory['description']}</p>
-        <div class="memory-images" style="${images.length === 0 ? 'display: none;' : ''}">
-            ${imagesElements}
+                <!-- Save Changes -->
+                <button type="submit" class="save-changes">Save Changes</button>
+            </form>
         </div>
     `;
 
-    // Update the title in the header if necessary
-    if (memory_header_div) {
-        memory_header_div.querySelector('.memory-title').textContent = memory['title'];
+    
+    const typeSelect = modal.querySelector('#type');
+    if (memory.type) {
+        typeSelect.value = (memory.type);
+    } else {
+        typeSelect.value = 'draft';
     }
-}
 
-// Event listener for edit button
-const editMemoryButton = memory_footer_div.querySelector('.edit-memory');
-editMemoryButton.addEventListener('click', function(event) {
-    event.preventDefault();
-    // Hide the memory content
-    memory_content_div.style.display = 'none';
-    // Create and display the edit form
-    showEditForm(memory, memory_card_div, memory_content_div);
-});
+    const shareSelect = modal.querySelector('#share');
+    if (memory.share) {
+        shareSelect.value = (memory.share);
+    } else {
+        shareSelect.value = 'just-me';
+    }
+
+    // Create container for memory images
+    const memoryImagesContainer = modal.querySelector('.memory-images');
+
+    // Display images
+    if (memory.image && Array.isArray(memory.image)) {
+        memory.image.forEach((imageUrl, index) => {
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.alt = `Image ${index + 1}`;
+            imgElement.classList.add('memory-image');
+
+            imgElement.addEventListener('load', () => {
+                imgElement.style.display = 'block';
+            });
+            
+            imgElement.onerror = () => {
+                console.error(`Error loading image: ${imageUrl}`);
+                imgElement.remove(); // Remove broken image
+            };
+
+            memoryImagesContainer.appendChild(imgElement);
+        });
+    }
+
+    // Close modal functionality
+    const closeButton = modal.querySelector('.close-button-edit');
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+        modal.remove();
+    });
+
+    // Submit form and save changes
+    const editForm = modal.querySelector(`#editMemoryForm_${memory.id}`);
+    editForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const updatedTitle = document.getElementById('title').value;
+        const updatedDescription = document.getElementById('description').value;
+        const updatedType = document.getElementById('type').value;
+        const updatedShare = document.getElementById('share').value;
+
+        const updatedMemoryData = {
+            title: updatedTitle,
+            description: updatedDescription,
+            image: memory['image'],
+            type: updatedType,
+            share: updatedShare,
+        };
+
+        try {
+            const response = await fetch(`/api/edit-memory/${memory.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedMemoryData)
+            });
+
+            if (response.ok) {
+                // Successfully updated memory, now update the UI with new values
+                // memory_content_div.querySelector('h2').textContent = updatedTitle;
+                // memory_content_div.querySelector('p').textContent = updatedDescription;
+                // memory_content_div.querySelector('.memory-images').innerHTML = `
+                //     ${updatedImages.map(imgUrl => `
+                //         <div class="memory-image">
+                //             <img src="${imgUrl}" alt="Memory Image" class="memory-image">
+                //         </div>
+                //     `).join('')}
+                // `;
+                modal.style.display = 'none';
+                modal.remove(); // Remove modal from DOM after submitting
+                console.log('Memory updated successfully');
+                window.location.reload();
+            } else {
+                console.error('Failed to update memory');
+            }
+        } catch (error) {
+            console.error('Error updating memory:', error);
+        }
+    });
+
+    // Image cropping functionality
+    // ----------------------------
+    // ----------------------------
+
+    return modal;
+}
