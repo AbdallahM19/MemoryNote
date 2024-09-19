@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
+    <link rel="icon" href="../static/uploads/icon-logo.png" type="img">
     <link rel="stylesheet" href="../static/home.css">
     <link rel="stylesheet" href="../static/home_header.css">
     <link rel="stylesheet" href="../static/home_divide.css">
     <link rel="stylesheet" href="../static/home_search.css">
+    <link rel="stylesheet" href="../static/memories_poster.css">
+    <link rel="stylesheet" href="../static/web_and_share_css/button.css">
+    <link rel="stylesheet" href="../static/search.css">
+    <link rel="stylesheet" href="../static/edit_post.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- Header Section -->
     <header>
         <div class="profile">
-            <a href="/profile" class="profile-button">
+            <a href="/profile-user" class="profile-button">
                 <i class="fas fa-user-circle"></i>
             </a>
         </div>
@@ -30,59 +35,46 @@
         </div>
 
         <div class="logo">
-            <a href="/"><img src="logo.png" alt="Site Logo"></a>
+            <a href="/"><img src="../static/uploads/icon-site.png" alt="Site Logo"></a>
         </div>
     </header>
 
     <!-- Main Content Section -->
-    <section class="search-results-container">
+    <section class="memories_container">
         <h1>Search Results</h1>
 
         <!-- Memories Results Section -->
         <div class="memories-results">
             <h2>Memories</h2>
-            <div class="search-results">
+            <div class="search-results" id="userMemories">
                 <!-- Sample Memory Search Result Item -->
-                {% for memory in memories %}
-                    <div class="search-result-item">
-                        <h3>{{ memory.title }}</h3>
-                        <p>{{ memory.description }}</p>
-                        <a href="#" class="view-details memory-detail" data-memory-id="{{ memory.id }}">View Details</a>
-                    </div>
-                {% endfor %}
-
-                <!-- Add more memory search result items as needed -->
             </div>
         </div>
 
         <!-- Memory Modal Structure -->
-        <div id="memoryModal" class="modal">
+        <!-- <div id="memoryModal" class="modal">
             <div class="modal-content memory-modal-content">
                 <span class="close-button">&times;</span>
                 <div class="photos"></div>
                 <h2>Memory Details</h2>
                 <p id="memory-modal-text">Detailed information about the memory will appear here.</p>
             </div>
-        </div>
+        </div> -->
 
         <!-- Users Results Section -->
         <div class="users-results">
             <h2>Users</h2>
             <div class="search-results">
                 <!-- Sample User Search Result Item -->
-                {% for user in users %}
                 <div class="search-result-item">
-                    <h3>{{ user.username }}</h3>
-                    <p>{{ user.description }}</p>
-                    <a href="#" class="view-details user-detail" data-user-id="{{ user.id }}">View Profile</a>
+                    <a href="#" class="view-details user-detail" data-user-id="">View Profile</a>
                 </div>
-                {% endfor %}
                 <!-- Add more user search result items as needed -->
             </div>
         </div>
 
         <!-- User Modal Structure -->
-        <div id="userModal" class="modal">
+        <!-- <div id="userModal" class="modal">
             <div class="modal-content user-modal-content">
                 <span class="close-button">&times;</span>
                 <div class="photos">
@@ -90,11 +82,11 @@
                 <h2>User Profile</h2>
                 <p id="user-modal-text">Detailed information about the user will appear here.</p>
             </div>
-        </div>
+        </div> -->
     </section>
 
     <!-- JavaScript to handle search functionality -->
-    <script src="../static/home.js"></script>
-    <script src="../static/search.js"></script>
+    <script type="module" src="../static/home.js"></script>
+    <script type="module" src="../static/search.js"></script>
 </body>
 </html>
