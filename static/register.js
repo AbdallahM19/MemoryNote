@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`/register/`, {
+        fetch(`/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
