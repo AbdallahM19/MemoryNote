@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+   
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right top, #4f4b4b, #333333, #1a1a1a);
+   
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+#MemoryKeeper {
+    padding-top: 200px;
+    text-align: center;
+    /* height: 100vh; */
+  /* font: 1em poppins; */
+  /* animation: slideIn 4s ; */
+}
+    /*
+ */
+/* } */
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    25% {
+        transform: translateX(25%);
+    }
+    75% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.container {
+    
+   
+    justify-content: center;
+    align-items: center;
+    
+    /* background: linear-gradient(to right top, #4f4b4b, #333333, #1a1a1a); */
+    justify-content: center;
+   
+    color: white;
+   /* margin-left: 25%; */
+    justify-content: center;
+    align-items: center;
+    /* color: black; */
+   
+    /* background: linear-gradient(to right top, #4f4b4b, #333333, #1a1a1a); */
+   
+}
+
+ .pic {
+   align-self: center;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    margin-left: 30px;
+} 
+
+/* .memo{
+   
+    text-align: center;
+    
+    font-size: 1.2em;
+    animation: slideInLeft 2.5s ease-out; 
+} */
+
+/* @keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+       
+    } 
+  */
+.home{
+    padding-top: 100px;
+    text-align: center;
+    font-size: 1.2em;
+    padding-left: 25%;
+    
+} 
+
+.navbar{
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    /* padding: 10px; */
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
